@@ -1,0 +1,184 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { APIProvider } from '@vis.gl/react-google-maps';
+import { MapContainer } from './components/MapContainer';
+import { Toolbar } from './components/Toolbar';
+import { MapStylePicker } from './components/MapStylePicker';
+import { RouteStyling } from './components/RouteStyling';
+import { Map as MapIcon, Download, Upload, Eye } from 'lucide-react';
+import './index.css';
+
+const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+
+function App() {
+  const [activeTool, setActiveTool] = useState('draw'); // 'draw', 'erase'
+  const [activeRouteId, setActiveRouteId] = useState(null);
+  const [mapStyleKey, setMapStyleKey] = useState('light');
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const [isGlobalView, setIsGlobalView] = useState(false);
+  const [globalStyle, setGlobalStyle] = useState({ color: '#4F46E5', weight: 4 });
+  const fileInputRef = useRef(null);
+
+  const [routes, setRoutes] = useState(() => {
+    const saved = localStorage.getItem('hiking_routes');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('hiking_routes', JSON.stringify(routes));
+  }, [routes]);
+
+  const displayToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+  };
+
+  useEffect(() => {
+    if (showToast) {
+      const t = setTimeout(() => setShowToast(false), 2500);
+      return () => clearTimeout(t);
+    }
+  }, [showToast]);
+
+  if (!API_KEY || API_KEY === 'your_api_key_here') {
+    return (
+      <div className="loading-overlay" style={{ flexDirection: 'column', gap: '16px' }}>
+        <MapIcon size={48} color="var(--primary)" />
+        <div style={{ textAlign: 'center', padding: '0 24px' }}>
+          <h2>API Key Required</h2>
+          <p style={{ color: 'var(--text-secondary)', marginTop: '8px', maxWidth: '400px' }}>
+            Please set your <code>VITE_GOOGLE_MAPS_API_KEY</code> in the <code>.env</code> file at the root of the project to continue.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const handleExport = () => {
+    const dataStr = JSON.stringify(routes, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = `HikeTracker_Backup_${new Date().toISOString().split('T')[0]}.json`;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    displayToast("Backup exported successfully!");
+  };
+
+  const handleImport = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target.result);
+        if (Array.isArray(parsed)) {
+          if (window.confirm("Overwrite existing map routes? Click 'Cancel' to combine them instead.")) {
+            setRoutes(parsed);
+          } else {
+            setRoutes([...routes, ...parsed]);
+          }
+          displayToast("Backup restored seamlessly!");
+          setActiveRouteId(null);
+        } else {
+           displayToast("Invalid backup format.");
+        }
+      } catch(err) {
+        displayToast("Failed to parse backup.");
+      }
+      e.target.value = null;
+    };
+    reader.readAsText(file);
+  };
+
+  const activeRoute = routes.find(r => r.id === activeRouteId);
+  const updateRouteStyle = (styleObj) => {
+    setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, style: { ...(r.style || {}), ...styleObj } } : r));
+  };
+
+  return (
+    <APIProvider apiKey={API_KEY}>
+      <div className="ui-layer">
+        <header className="app-header" style={{ justifyContent: 'flex-start', gap: '24px' }}>
+          <div className="brand">
+            <MapIcon className="brand-icon" size={24} />
+            <h1>HikeTracker</h1>
+          </div>
+          
+          <div style={{ display: 'flex', gap: '8px', pointerEvents: 'auto' }}>
+            <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px' }} onClick={() => fileInputRef.current?.click()} title="Import Backup JSON">
+              <Upload size={16} />
+              <span>Import</span>
+            </button>
+            <input type="file" accept=".json" style={{ display: 'none' }} ref={fileInputRef} onChange={handleImport} />
+            
+            <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px' }} onClick={handleExport} title="Export Current Routes">
+              <Download size={16} />
+              <span>Export</span>
+            </button>
+          </div>
+        </header>
+
+        <div className={`toast ${showToast ? 'show' : ''}`}>
+          {toastMessage}
+        </div>
+
+        {!isGlobalView && (
+          <Toolbar 
+            activeTool={activeTool} 
+            setActiveTool={setActiveTool} 
+            activeRouteId={activeRouteId}
+            setActiveRouteId={setActiveRouteId}
+          />
+        )}
+
+        <div className="right-floating-panel">
+          <button 
+            className={`fab ${isGlobalView ? 'active' : ''}`} 
+            onClick={() => {
+              setIsGlobalView(!isGlobalView);
+              setActiveRouteId(null);
+            }} 
+            title="Global View Mode"
+          >
+            <Eye size={22} />
+          </button>
+
+          <MapStylePicker 
+            currentStyle={mapStyleKey} 
+            onChangeStyle={setMapStyleKey} 
+          />
+
+          <RouteStyling 
+            activeRoute={isGlobalView ? { style: globalStyle } : activeRoute} 
+            updateRouteStyle={isGlobalView ? (styleObj) => setGlobalStyle(prev => ({...prev, ...styleObj})) : updateRouteStyle} 
+            title={isGlobalView ? "Global Settings" : "Path Style"}
+          />
+        </div>
+      </div>
+
+      <MapContainer 
+        activeTool={activeTool} 
+        showToast={displayToast} 
+        activeRouteId={activeRouteId}
+        setActiveRouteId={setActiveRouteId}
+        mapStyleKey={mapStyleKey}
+        routes={routes}
+        setRoutes={setRoutes}
+        isGlobalView={isGlobalView}
+        globalStyle={globalStyle}
+      />
+    </APIProvider>
+  );
+}
+
+export default App;
