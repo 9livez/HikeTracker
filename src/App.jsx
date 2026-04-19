@@ -4,7 +4,7 @@ import { MapContainer } from './components/MapContainer';
 import { Toolbar } from './components/Toolbar';
 import { MapStylePicker } from './components/MapStylePicker';
 import { RouteStyling } from './components/RouteStyling';
-import { Map as MapIcon, Download, Upload, Eye } from 'lucide-react';
+import { Map as MapIcon, Download, Upload, Eye, Trash2 } from 'lucide-react';
 import './index.css';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -17,6 +17,8 @@ function App() {
   const [showToast, setShowToast] = useState(false);
   const [isGlobalView, setIsGlobalView] = useState(false);
   const [globalStyle, setGlobalStyle] = useState({ color: '#4F46E5', weight: 4 });
+  const [showClearModal, setShowClearModal] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(0);
   const fileInputRef = useRef(null);
 
   const [routes, setRoutes] = useState(() => {
@@ -100,6 +102,17 @@ function App() {
     reader.readAsText(file);
   };
 
+  const executeClear = () => {
+    setRoutes([]);
+    setActiveRouteId(null);
+    setMapStyleKey('light');
+    setActiveTool('draw');
+    setIsGlobalView(false);
+    setResetTrigger(prev => prev + 1);
+    setShowClearModal(false);
+    displayToast("Map cleared and reset");
+  };
+
   const activeRoute = routes.find(r => r.id === activeRouteId);
   const updateRouteStyle = (styleObj) => {
     setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, style: { ...(r.style || {}), ...styleObj } } : r));
@@ -124,6 +137,11 @@ function App() {
             <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px' }} onClick={handleExport} title="Export Current Routes">
               <Download size={16} />
               <span>Export</span>
+            </button>
+            
+            <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px', color: 'var(--danger)' }} onClick={() => setShowClearModal(true)} title="Clear Map">
+              <Trash2 size={16} />
+              <span>Clear</span>
             </button>
           </div>
         </header>
@@ -164,6 +182,29 @@ function App() {
             title={isGlobalView ? "Global Settings" : "Path Style"}
           />
         </div>
+
+        {showClearModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>Confirm Clear</h2>
+              <p>Do you want to export your routes before clearing the map? This action cannot be undone.</p>
+              <div className="modal-buttons">
+                <button className="modal-btn primary" onClick={() => {
+                  handleExport();
+                  executeClear();
+                }}>
+                  Yes, Export &amp; Clear
+                </button>
+                <button className="modal-btn danger" onClick={executeClear}>
+                  No, Just Clear
+                </button>
+                <button className="modal-btn secondary" onClick={() => setShowClearModal(false)}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <MapContainer 
@@ -176,6 +217,7 @@ function App() {
         setRoutes={setRoutes}
         isGlobalView={isGlobalView}
         globalStyle={globalStyle}
+        resetTrigger={resetTrigger}
       />
     </APIProvider>
   );
