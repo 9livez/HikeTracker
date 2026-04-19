@@ -3,7 +3,7 @@ import { Map, useMap, useMapsLibrary, Marker } from '@vis.gl/react-google-maps';
 import { Polyline } from '../utils/googleMapsComponents';
 import { mapStyles } from '../utils/mapStyles';
 
-export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRouteId, mapStyleKey, routes, setRoutes, isGlobalView, globalStyle }) => {
+export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRouteId, mapStyleKey, routes, setRoutes, isGlobalView, globalStyle, resetTrigger }) => {
   const map = useMap();
   const routesLib = useMapsLibrary('routes');
   const geometryLib = useMapsLibrary('geometry');
@@ -18,6 +18,14 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     });
     return () => google.maps.event.removeListener(listener);
   }, [map]);
+
+  useEffect(() => {
+    if (resetTrigger > 0 && map) {
+      map.setZoom(13);
+      map.panTo({ lat: 35.6764, lng: 139.6500 });
+      setCurrentZoom(13);
+    }
+  }, [resetTrigger, map]);
 
   const handleZoomChange = (e) => {
     const newZoom = parseFloat(e.target.value);
