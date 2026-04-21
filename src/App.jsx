@@ -4,8 +4,9 @@ import { MapContainer } from './components/MapContainer';
 import { Toolbar } from './components/Toolbar';
 import { MapStylePicker } from './components/MapStylePicker';
 import { RouteStyling } from './components/RouteStyling';
-import { Map as MapIcon, Download, Upload, Eye, Trash2, FileJson, MapPin } from 'lucide-react';
+import { Map as MapIcon, Download, Upload, Eye, Trash2, FileJson, MapPin, Ruler } from 'lucide-react';
 import { downloadKML } from './utils/kmlExport';
+import { calculateRouteLength, formatDistance } from './utils/distance';
 import './index.css';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -127,6 +128,16 @@ function App() {
     setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, style: { ...(r.style || {}), ...styleObj } } : r));
   };
 
+  // Calculate distance display
+  let displayDistance = null;
+  if (isGlobalView) {
+    const totalMeters = routes.reduce((acc, r) => acc + calculateRouteLength(r), 0);
+    displayDistance = formatDistance(totalMeters);
+  } else if (activeRouteId) {
+    const routeMeters = calculateRouteLength(activeRoute);
+    displayDistance = formatDistance(routeMeters);
+  }
+
   return (
     <APIProvider apiKey={API_KEY}>
       <div className="ui-layer">
@@ -211,6 +222,16 @@ function App() {
             title={isGlobalView ? "Global Settings" : "Path Style"}
           />
         </div>
+
+        {displayDistance && (
+          <div className="distance-display">
+            <Ruler className="distance-icon" size={18} />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span className="distance-label">{isGlobalView ? "Total Distance" : "Path Distance"}</span>
+              <span className="distance-value">{displayDistance}</span>
+            </div>
+          </div>
+        )}
 
         {showClearModal && (
           <div className="modal-overlay">
