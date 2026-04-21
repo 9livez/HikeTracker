@@ -24,9 +24,15 @@ Powered by React, Vite, and the official `@vis.gl/react-google-maps` library, Hi
   - Overrides all independent path styles with a cohesive, unified color and stroke, locking all clicks to prevent accidents.
   - Unveils a fluid **Fractional Zoom Slider** allowing for microscopic (0.05x) camera tuning before capturing the ultimate screenshot of your journey.
   
-- **Instant Local Backup & Persistence**
-  - **Cache Automatic Saving:** Unintentionally closed the tab? Your 1,000+ kilometer hike is flawlessly preserved locally via `localStorage`.
-  - **Secure JSON I/O:** Click `Export` to instantaneously download your entire geographic canvas as a tiny JSON file. Moving to a new computer? Click `Import` and you can choose whether to securely *Overwrite* your current map or non-destructively *Combine* historical overlays!
+- **Real-Time Distance Tracking 📏**
+  - Instantly see the length of your active route as you draw or adjust anchors.
+  - Enter **Global View Mode** to see the total cumulative distance of every trail on your map.
+  - Smart formatting automatically switches between meters (m) and kilometers (km) with high precision.
+
+- **Universal Export & Safety 🛡️**
+  - **Multi-Format Export**: Choose between **JSON** for a full state backup (preserving all editable anchors) or **KML** to directly import your routes into the official Google Maps app or Google Earth.
+  - **Safe Clear**: Use the dedicated Clear button to reset your canvas. Includes a mandatory safety check that prompts you to export a backup before data is wiped.
+  - **Cache Automatic Saving**: Unintentionally closed the tab? Your 1,000+ kilometer hike is flawlessly preserved locally via `localStorage`.
 
 ## 🚀 Getting Started
 
