@@ -4,7 +4,8 @@ import { MapContainer } from './components/MapContainer';
 import { Toolbar } from './components/Toolbar';
 import { MapStylePicker } from './components/MapStylePicker';
 import { RouteStyling } from './components/RouteStyling';
-import { Map as MapIcon, Download, Upload, Eye, Trash2 } from 'lucide-react';
+import { Map as MapIcon, Download, Upload, Eye, Trash2, FileJson, MapPin } from 'lucide-react';
+import { downloadKML } from './utils/kmlExport';
 import './index.css';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -18,6 +19,7 @@ function App() {
   const [isGlobalView, setIsGlobalView] = useState(false);
   const [globalStyle, setGlobalStyle] = useState({ color: '#4F46E5', weight: 4 });
   const [showClearModal, setShowClearModal] = useState(false);
+  const [showExportMenu, setShowExportMenu] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
   const fileInputRef = useRef(null);
 
@@ -73,7 +75,14 @@ function App() {
     document.body.appendChild(link);
     link.click();
     link.remove();
+    setShowExportMenu(false);
     displayToast("Backup exported successfully!");
+  };
+
+  const handleExportKML = () => {
+    downloadKML(routes);
+    setShowExportMenu(false);
+    displayToast("KML exported for Google Maps!");
   };
 
   const handleImport = (e) => {
@@ -134,10 +143,30 @@ function App() {
             </button>
             <input type="file" accept=".json" style={{ display: 'none' }} ref={fileInputRef} onChange={handleImport} />
             
-            <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px' }} onClick={handleExport} title="Export Current Routes">
-              <Download size={16} />
-              <span>Export</span>
-            </button>
+            <div className="dropdown-container">
+              <button 
+                className={`tool-btn ${showExportMenu ? 'active' : ''}`} 
+                style={{ background: 'var(--surface)', padding: '10px 16px' }} 
+                onClick={() => setShowExportMenu(!showExportMenu)} 
+                title="Export Routes"
+              >
+                <Download size={16} />
+                <span>Export</span>
+              </button>
+              
+              {showExportMenu && (
+                <div className="dropdown-menu">
+                  <button className="dropdown-item" onClick={handleExport}>
+                    <FileJson size={16} />
+                    <span>Backup (JSON)</span>
+                  </button>
+                  <button className="dropdown-item" onClick={handleExportKML}>
+                    <MapPin size={16} />
+                    <span>Google Maps (KML)</span>
+                  </button>
+                </div>
+              )}
+            </div>
             
             <button className="tool-btn" style={{ background: 'var(--surface)', padding: '10px 16px', color: 'var(--danger)' }} onClick={() => setShowClearModal(true)} title="Clear Map">
               <Trash2 size={16} />
