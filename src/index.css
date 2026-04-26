@@ -3,6 +3,7 @@
 :root {
   --primary: #4F46E5;
   --primary-hover: #4338CA;
+  --primary-bright: #A5B4FC;
   --bg-color: #121214;
   --surface: rgba(30, 30, 36, 0.85);
   --border: rgba(255, 255, 255, 0.1);
@@ -265,7 +266,7 @@ body {
 }
 
 .info-icon {
-  color: var(--primary);
+  color: var(--primary-bright);
 }
 
 .info-close-btn {
@@ -328,7 +329,7 @@ body {
 .info-distance-value {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--primary);
+  color: var(--primary-bright);
   padding: 4px 0;
 }
 
