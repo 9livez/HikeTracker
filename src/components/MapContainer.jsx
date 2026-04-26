@@ -56,6 +56,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
   };
 
   const handleMapClick = async (event) => {
+    if (isGlobalView) return;
     if (isDraggingMarker.current) return;
     if (activeTool !== 'draw') return;
     const clickedLat = event.detail.latLng.lat;
@@ -94,6 +95,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
   };
 
   const handleDragEnd = async (routeId, anchorIndex, event) => {
+    if (isGlobalView) return;
     if (activeTool !== 'draw') {
       setTimeout(() => { isDraggingMarker.current = false; }, 200);
       return;
@@ -126,6 +128,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
   };
 
   const getMapCursor = () => {
+    if (isGlobalView) return 'default';
     switch (activeTool) {
       case 'draw':
         return `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="%234F46E5" stroke-width="2"/><circle cx="8" cy="8" r="1.5" fill="%234F46E5"/></svg>') 8 8, crosshair`;
@@ -137,6 +140,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
   };
 
   const handleAnchorClick = async (routeId, anchorIndex) => {
+    if (isGlobalView) return;
     if (activeTool === 'draw') {
       if (routeId !== activeRouteId) {
         setActiveRouteId(routeId);
