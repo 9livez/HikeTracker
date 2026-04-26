@@ -80,7 +80,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     const targetRoute = routes.find(r => r.id === activeRouteId);
     if (!targetRoute) return;
 
-    showToast("Calculating path...");
+    showToast("Calculating route...");
     let newAnchors = [...targetRoute.anchors];
     let newPaths = [...targetRoute.paths];
 
@@ -90,7 +90,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     newPaths.push(path);
 
     setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, anchors: newAnchors, paths: newPaths } : r));
-    showToast("Path appended");
+    showToast("Route extended");
   };
 
   const handleDragEnd = async (routeId, anchorIndex, event) => {
@@ -103,7 +103,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     const targetRoute = routes.find(r => r.id === routeId);
     if (!targetRoute) return;
 
-    showToast("Recalculating path...");
+    showToast("Recalculating route...");
     let newAnchors = [...targetRoute.anchors];
     newAnchors[anchorIndex] = newPos;
     let newPaths = [...targetRoute.paths];
@@ -120,7 +120,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     }
 
     setRoutes(routes.map(r => r.id === routeId ? { ...r, anchors: newAnchors, paths: newPaths } : r));
-    showToast("Path adjusted");
+    showToast("Route adjusted");
     
     setTimeout(() => { isDraggingMarker.current = false; }, 200);
   };
@@ -174,7 +174,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
     }
 
     setRoutes(routes.map(r => r.id === routeId ? { ...r, anchors: newAnchors, paths: newPaths } : r));
-    showToast("Anchor removed, path updated");
+    showToast("Anchor removed, route updated");
   };
 
   const handePolylineClick = async (routeId, e) => {

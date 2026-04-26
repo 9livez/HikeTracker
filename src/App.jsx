@@ -236,7 +236,7 @@ function App() {
           <RouteStyling 
             activeRoute={isGlobalView ? { style: globalStyle } : activeRoute} 
             updateRouteStyle={isGlobalView ? (styleObj) => setGlobalStyle(prev => ({...prev, ...styleObj})) : updateRouteStyle} 
-            title={isGlobalView ? "Global Settings" : "Path Style"}
+            title={isGlobalView ? "Global Settings" : "Route Style"}
           />
         </div>
 
@@ -244,7 +244,7 @@ function App() {
           <div className="distance-display">
             <Ruler className="distance-icon" size={18} />
             <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span className="distance-label">{isGlobalView ? "Total Distance" : "Path Distance"}</span>
+              <span className="distance-label">{isGlobalView ? "Total Distance" : "Route Distance"}</span>
               <span className="distance-value">{displayDistance}</span>
             </div>
           </div>

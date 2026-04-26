@@ -12,7 +12,7 @@ const PRESET_COLORS = [
   '#84CC16'  // Lime (Greater contrast with Emerald)
 ];
 
-export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Path Style" }) => {
+export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Route Style" }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!activeRoute) return null;
@@ -25,7 +25,7 @@ export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Path Styl
       <button 
         className={`fab ${isOpen ? 'active' : ''}`} 
         onClick={() => setIsOpen(!isOpen)} 
-        title="Path Style"
+        title="Route Style"
       >
         <Palette size={22} />
       </button>
