@@ -4,6 +4,7 @@ import { MapContainer } from './components/MapContainer';
 import { Toolbar } from './components/Toolbar';
 import { MapStylePicker } from './components/MapStylePicker';
 import { RouteStyling } from './components/RouteStyling';
+import { RouteInfoPanel } from './components/RouteInfoPanel';
 import { Map as MapIcon, Download, Upload, Eye, Trash2, FileJson, MapPin, Ruler } from 'lucide-react';
 import { downloadKML } from './utils/kmlExport';
 import { calculateRouteLength, formatDistance } from './utils/distance';
@@ -22,6 +23,8 @@ function App() {
   const [showClearModal, setShowClearModal] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const [showInfoPanel, setShowInfoPanel] = useState(false);
+  const prevActiveRouteId = useRef(null);
   const fileInputRef = useRef(null);
 
   const [routes, setRoutes] = useState(() => {
@@ -51,6 +54,16 @@ function App() {
       return () => clearTimeout(t);
     }
   }, [showToast]);
+
+  useEffect(() => {
+    if (activeRouteId && activeRouteId !== prevActiveRouteId.current) {
+      setShowInfoPanel(true);
+    }
+    if (!activeRouteId) {
+      setShowInfoPanel(false);
+    }
+    prevActiveRouteId.current = activeRouteId;
+  }, [activeRouteId]);
 
   if (!API_KEY || API_KEY === 'your_api_key_here') {
     return (
@@ -126,6 +139,10 @@ function App() {
   const activeRoute = routes.find(r => r.id === activeRouteId);
   const updateRouteStyle = (styleObj) => {
     setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, style: { ...(r.style || {}), ...styleObj } } : r));
+  };
+  
+  const updateRouteData = (dataObj) => {
+    setRoutes(routes.map(r => r.id === activeRouteId ? { ...r, ...dataObj } : r));
   };
 
   // Calculate distance display
@@ -254,6 +271,15 @@ function App() {
               </div>
             </div>
           </div>
+        )}
+
+        {showInfoPanel && activeRoute && (
+          <RouteInfoPanel 
+            route={activeRoute} 
+            distance={displayDistance}
+            onUpdate={updateRouteData}
+            onClose={() => setShowInfoPanel(false)}
+          />
         )}
       </div>
 
