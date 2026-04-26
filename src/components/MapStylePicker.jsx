@@ -27,13 +27,13 @@ export const MapStylePicker = ({ currentStyle, onChangeStyle }) => {
             className={`style-item ${currentStyle === 'light' ? 'active' : ''}`} 
             onClick={() => { onChangeStyle('light'); setIsOpen(false); }}
           >
-            Light (Clear Path)
+            Light (Route Focus)
           </button>
           <button 
             className={`style-item ${currentStyle === 'dark' ? 'active' : ''}`} 
             onClick={() => { onChangeStyle('dark'); setIsOpen(false); }}
           >
-            Dark (Clear Path)
+            Dark (Route Focus)
           </button>
           <button 
             className={`style-item ${currentStyle === 'terrain' ? 'active' : ''}`} 

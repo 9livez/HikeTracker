@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { Palette } from 'lucide-react';
 
 const PRESET_COLORS = [
-  '#4F46E5', // Indigo (Default)
+  '#6366F1', // Indigo (Brighter)
   '#EF4444', // Red
   '#F59E0B', // Amber
   '#10B981', // Emerald
-  '#3B82F6', // Blue
-  '#8B5CF6', // Violet
+  '#0EA5E9', // Sky Blue (Greater contrast with Indigo)
+  '#A855F7', // Violet
   '#EC4899', // Pink
-  '#14B8A6'  // Teal
+  '#84CC16'  // Lime (Greater contrast with Emerald)
 ];
 
-export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Path Style" }) => {
+export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Route Style" }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!activeRoute) return null;
@@ -25,7 +25,7 @@ export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Path Styl
       <button 
         className={`fab ${isOpen ? 'active' : ''}`} 
         onClick={() => setIsOpen(!isOpen)} 
-        title="Path Style"
+        title="Route Style"
       >
         <Palette size={22} />
       </button>
