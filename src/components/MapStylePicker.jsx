@@ -41,6 +41,12 @@ export const MapStylePicker = ({ currentStyle, onChangeStyle }) => {
           >
             Terrain
           </button>
+          <button 
+            className={`style-item ${currentStyle === 'satellite' ? 'active' : ''}`} 
+            onClick={() => { onChangeStyle('satellite'); setIsOpen(false); }}
+          >
+            Satellite
+          </button>
         </div>
       )}
     </div>

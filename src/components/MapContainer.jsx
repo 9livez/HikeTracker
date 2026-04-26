@@ -248,6 +248,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
   if (mapStyleKey === 'light') currentStyles = mapStyles.light;
   if (mapStyleKey === 'dark') currentStyles = mapStyles.dark;
   if (mapStyleKey === 'terrain') currentMapTypeId = 'terrain';
+  if (mapStyleKey === 'satellite') currentMapTypeId = 'hybrid';
 
   return (
     <div className="map-container">
