@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Map, useMap, useMapsLibrary, Marker } from '@vis.gl/react-google-maps';
 import { Polyline } from '../utils/googleMapsComponents';
 import { mapStyles } from '../utils/mapStyles';
+import { resolveColor, PRESET_COLORS } from '../utils/colors';
 
 export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRouteId, mapStyleKey, routes, setRoutes, isGlobalView, globalStyle, resetTrigger }) => {
   const map = useMap();
@@ -67,7 +68,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
       // Create new route
       const newRoute = {
         id: 'route-' + Date.now(),
-        style: { color: '#4F46E5', weight: 4 },
+        style: { colorIndex: 0, color: PRESET_COLORS[0], weight: 4 },
         anchors: [newAnchor],
         paths: []
       };
@@ -289,7 +290,7 @@ export const MapContainer = ({ activeTool, showToast, activeRouteId, setActiveRo
           const flatPath = [];
           route.paths.forEach(segment => flatPath.push(...segment));
           
-          const routeColor = isGlobalView ? globalStyle.color : (route.style?.color || '#4F46E5');
+          const routeColor = isGlobalView ? resolveColor(globalStyle) : resolveColor(route.style);
           const routeWeight = isGlobalView ? globalStyle.weight : (route.style?.weight || 4);
           
           return (
