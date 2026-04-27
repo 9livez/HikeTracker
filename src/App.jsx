@@ -8,6 +8,7 @@ import { RouteInfoPanel } from './components/RouteInfoPanel';
 import { Map as MapIcon, Download, Upload, Eye, Trash2, FileJson, MapPin, Ruler } from 'lucide-react';
 import { downloadKML } from './utils/kmlExport';
 import { calculateRouteLength, formatDistance } from './utils/distance';
+import { PRESET_COLORS, ensureColorIndex } from './utils/colors';
 import './index.css';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
@@ -19,7 +20,7 @@ function App() {
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const [isGlobalView, setIsGlobalView] = useState(false);
-  const [globalStyle, setGlobalStyle] = useState({ color: '#4F46E5', weight: 4 });
+  const [globalStyle, setGlobalStyle] = useState({ colorIndex: 0, color: PRESET_COLORS[0], weight: 4 });
   const [showClearModal, setShowClearModal] = useState(false);
   const [showExportMenu, setShowExportMenu] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
@@ -31,7 +32,11 @@ function App() {
     const saved = localStorage.getItem('hiking_routes');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return parsed.map(r => ({
+          ...r,
+          style: ensureColorIndex(r.style)
+        }));
       } catch (e) {
         return [];
       }
@@ -107,10 +112,15 @@ function App() {
       try {
         const parsed = JSON.parse(ev.target.result);
         if (Array.isArray(parsed)) {
+          const snapped = parsed.map(r => ({
+            ...r,
+            style: ensureColorIndex(r.style)
+          }));
+          
           if (window.confirm("Overwrite existing map routes? Click 'Cancel' to combine them instead.")) {
-            setRoutes(parsed);
+            setRoutes(snapped);
           } else {
-            setRoutes([...routes, ...parsed]);
+            setRoutes([...routes, ...snapped]);
           }
           displayToast("Backup restored seamlessly!");
           setActiveRouteId(null);
@@ -236,7 +246,7 @@ function App() {
           <RouteStyling 
             activeRoute={isGlobalView ? { style: globalStyle } : activeRoute} 
             updateRouteStyle={isGlobalView ? (styleObj) => setGlobalStyle(prev => ({...prev, ...styleObj})) : updateRouteStyle} 
-            title={isGlobalView ? "Global Settings" : "Route Style"}
+            title={isGlobalView ? "Global Appearance" : "Route Style"}
           />
         </div>
 

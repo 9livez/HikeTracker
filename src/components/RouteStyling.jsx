@@ -1,24 +1,17 @@
 import React, { useState } from 'react';
 import { Palette } from 'lucide-react';
-
-const PRESET_COLORS = [
-  '#6366F1', // Indigo (Brighter)
-  '#EF4444', // Red
-  '#F59E0B', // Amber
-  '#10B981', // Emerald
-  '#0EA5E9', // Sky Blue (Greater contrast with Indigo)
-  '#A855F7', // Violet
-  '#EC4899', // Pink
-  '#84CC16'  // Lime (Greater contrast with Emerald)
-];
+import { PRESET_COLORS, resolveColor } from '../utils/colors';
 
 export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Route Style" }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   if (!activeRoute) return null;
 
-  const color = activeRoute.style?.color || '#4F46E5';
-  const weight = activeRoute.style?.weight || 4;
+  const style = activeRoute.style || {};
+  const weight = style.weight || 4;
+  
+  // Get active index for highlighting
+  const activeIndex = style.colorIndex !== undefined ? parseInt(style.colorIndex) : PRESET_COLORS.indexOf(style.color);
 
   return (
     <div className="route-styling-container">
@@ -40,15 +33,18 @@ export const RouteStyling = ({ activeRoute, updateRouteStyle, title = "Route Sty
           <div className="styling-section">
             <label>Color</label>
             <div className="colors-grid">
-              {PRESET_COLORS.map(c => (
-                <button
-                  key={c}
-                  className={`color-btn ${color === c ? 'active' : ''}`}
-                  style={{ backgroundColor: c }}
-                  onClick={() => updateRouteStyle({ color: c })}
-                  title={c}
-                />
-              ))}
+              {PRESET_COLORS.map((c, index) => {
+                const isActive = activeIndex === index;
+                return (
+                  <button
+                    key={index}
+                    className={`color-btn ${isActive ? 'active' : ''}`}
+                    style={{ backgroundColor: c }}
+                    onClick={() => updateRouteStyle({ colorIndex: index, color: c })}
+                    title={`Color ${index + 1}`}
+                  />
+                );
+              })}
             </div>
           </div>
 

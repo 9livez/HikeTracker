@@ -1,3 +1,5 @@
+import { resolveColor } from './colors';
+
 // Converts standard #RRGGBB hex to KML AABBGGRR format
 function convertHexToKmlColor(hex, opacity = 'FF') {
   // Remove hash if present
@@ -41,7 +43,7 @@ export function generateKML(routes) {
 
     if (allCoords.length === 0) return; // Skip empty routes
 
-    const color = route.style?.color || '#4F46E5';
+    const color = resolveColor(route.style?.color);
     const weight = route.style?.weight || 4;
     const kmlColor = convertHexToKmlColor(color, 'E6'); // E6 is ~90% opacity
 
