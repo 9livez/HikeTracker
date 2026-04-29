@@ -326,11 +326,42 @@ body {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* Fix for native date picker icon color in dark mode */
+.info-field input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) opacity(0.7);
+  cursor: pointer;
+}
+
+.info-field input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  filter: invert(1) opacity(1);
+}
+
 .info-distance-value {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--primary-bright);
   padding: 4px 0;
+}
+
+.rating-container {
+  display: flex;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.star-icon {
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.star-icon:hover {
+  transform: scale(1.1);
+  color: #FBBF24;
+}
+
+.star-icon.filled {
+  color: #FBBF24;
 }
 
 /* Floating Action Button for Settings/Help */
