@@ -57,7 +57,7 @@ export function generateKML(routes) {
       </LineStyle>
     </Style>
     <Placemark>
-      <name>Route ${index + 1}</name>
+      <name>${route.title || `Route ${index + 1}`}</name>
       <styleUrl>#${styleId}</styleUrl>
       <LineString>
         <tessellate>1</tessellate>
@@ -81,7 +81,12 @@ export function downloadKML(routes) {
   const url = URL.createObjectURL(blob);
   
   const link = document.createElement('a');
-  link.download = `HikeTracker_Routes_${new Date().toISOString().split('T')[0]}.kml`;
+  let filename = `HikeTracker_Routes_${new Date().toISOString().split('T')[0]}.kml`;
+  if (routes.length === 1 && routes[0].title) {
+    const sanitizedTitle = routes[0].title.replace(/[^a-z0-9_\-]/gi, '_');
+    filename = `HikeTracker_${sanitizedTitle}.kml`;
+  }
+  link.download = filename;
   link.href = url;
   document.body.appendChild(link);
   link.click();

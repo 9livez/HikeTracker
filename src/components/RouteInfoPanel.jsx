@@ -1,5 +1,6 @@
 import React from 'react';
-import { X, Info, Type, MessageSquare, Ruler, Calendar, Star } from 'lucide-react';
+import { X, Info, Type, MessageSquare, Ruler, Calendar, Star, Download } from 'lucide-react';
+import { downloadKML } from '../utils/kmlExport';
 
 export const RouteInfoPanel = ({ route, distance, onUpdate, onClose }) => {
   if (!route) return null;
@@ -69,6 +70,15 @@ export const RouteInfoPanel = ({ route, distance, onUpdate, onClose }) => {
             rows={3}
           />
         </div>
+
+        <button 
+          className="export-kml-btn" 
+          onClick={() => downloadKML([route])}
+          title="Export this active route to KML format for Google Maps"
+        >
+          <Download size={14} />
+          <span>Export Google Maps (KML)</span>
+        </button>
       </div>
     </div>
   );

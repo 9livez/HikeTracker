@@ -364,6 +364,45 @@ body {
   color: #FBBF24;
 }
 
+.export-kml-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  margin-top: 8px;
+}
+
+.export-kml-btn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
+}
+
+.export-kml-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+}
+
+.export-kml-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.export-kml-btn:hover svg {
+  transform: translateY(1px);
+}
+
 /* Floating Action Button for Settings/Help */
 .fab {
   pointer-events: auto;
