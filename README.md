@@ -1,74 +1,109 @@
 # HikeTracker 🏕️
 
-HikeTracker is a highly interactive, web-based tool designed to trace, record, and aestheticize your long-distance hiking and backpacking routes directly on Google Maps.
+HikeTracker is a highly interactive, web-based tool designed to trace, record, customize, and aestheticize your hiking and backpacking routes directly on Google Maps. 
 
-Powered by React, Vite, and the official `@vis.gl/react-google-maps` library, HikeTracker automatically snaps your drawn paths to realistic roads and walking trails using the Google Directions API. It is designed heavily with user experience, flawless UI interactions, and beautiful cartography in mind.
+Powered by **React 19**, **Vite**, and the official `@vis.gl/react-google-maps` library, HikeTracker automatically snaps your drawn paths to realistic roads and walking trails using the Google Directions API. It is designed with exceptional user experience, premium glassmorphic UI interactions, and beautiful cartography in mind.
+
+<p align="center">
+  <img src="./screenshots/route_edit_light.png" width="49%" alt="Route Information & Editing" />
+  <img src="./screenshots/global_view_dark.png" width="49%" alt="Global View & Screenshot Mode" />
+</p>
+
+*Left: Route detail logs (Title, Date, Star Rating, Remarks) and KML Export on a custom Light (Route Focus) map theme. Right: Clean Global View and Screenshot mode on a Dark (Route Focus) map theme showcasing total cumulative distance.*
+
+---
 
 ## ✨ Key Features
 
-- **Smart Path Drawing & Editing**
-  - **Drawing Toll:** Click anywhere to create a route. Every point you plot automatically talks to the Google Server to snap the vector path realistically to real-world pedestrian streets and trails.
-  - **Auto-Anchor Insertion:** Click anywhere on an existing active polyline to automatically split the line and insert a Draggable Anchor exactly at the interaction point.
-  - **Refining & Erasing:** Grab an anchor and flawlessly adjust the waypoints, or instantly switch to Erase mode to pop anchors off your map in real time.
+### 📝 Route Information & Logs (New)
+* **Detailed Route Profiling**: Set a custom **Title** (e.g. "海老川"), log the exact hike **Date** via a calendar input, rate the experience with a **5-star interactive rating**, and write detailed **Remarks** about trail conditions or highlights.
+* **Per-Route KML Export**: Instantly export individual routes directly from the detail panel as standard `.kml` files. Filenames are dynamically generated from the route title (e.g., `海老川.kml`), ready to be imported into Google Maps ("My Maps"), Google Earth, or handheld GPS units.
 
-- **Multiple Track Management & UI Isolation**
-  - Plot multiple independent routes simultaneously across continents.
-  - Only one route engages in an "Editing" state at any given moment, ensuring completely protected and predictable pointer interactions.
+### 🎨 Custom Map Themes (New)
+* Select from five customized cartographic styles to fit your aesthetic:
+  * **Light (Route Focus)**: High-contrast light mode with muted background details, making colored routes pop.
+  * **Dark (Route Focus)**: Sleek dark mode with vibrant neon route contrast.
+  * **Normal**: Standard Google Maps view.
+  * **Terrain**: Topographical elevation contours and shaded relief.
+  * **Satellite**: Photographic satellite imagery.
 
-- **Per-Path Fine Styling System**
-  - Customize the exact thickness (2px to 12px) and select from vibrant preset neon colors (Indigo, Emerald, Violet, Amber, etc.) independently for *every single route* you've walked. Makes distinguishing trips from different years trivial.
+### 🧭 Smart Path Drawing & Editing
+* **Drawing Tool**: Click to plot waypoints. Coordinates talk to the Google Maps Directions API, snapping path segments to real-world pedestrian streets and hiking trails.
+* **Auto-Anchor Insertion**: Click anywhere on an existing active polyline to automatically split the line and insert a draggable anchor exactly at the click location.
+* **Anchor Refining & Erasing**: Grab and drag anchors to tweak paths, or switch to Erase mode to click and remove individual anchor points.
+* **Route Isolation**: Manage multiple paths simultaneously. Only one route enters an active "Editing" state at a time, protecting others from accidental adjustments.
 
-- **Global View & Screenshot Mode 🌌**
-  - Click the **Eye icon** to dive into a distraction-free overview.
-  - It globally strips the map of all anchors, editing tools, and interface clutter. 
-  - Overrides all independent path styles with a cohesive, unified color and stroke, locking all clicks to prevent accidents.
-  - Unveils a fluid **Fractional Zoom Slider** allowing for microscopic (0.05x) camera tuning before capturing the ultimate screenshot of your journey.
-  
-- **Real-Time Distance Tracking 📏**
-  - Instantly see the length of your active route as you draw or adjust anchors.
-  - Enter **Global View Mode** to see the total cumulative distance of every trail on your map.
-  - Smart formatting automatically switches between meters (m) and kilometers (km) with high precision.
+### 🌌 Global View & Screenshot Mode
+* **Interaction Lock**: Activating Global View hides UI menus and removes all draggable anchor pins, locking map click events to prevent accidental modifications.
+* **Unified Aesthetics**: Temporarily overrides all individual path styles with a single global color and thickness slider (2px to 12px) to create clean, uniform maps.
+* **Fractional Zoom**: Accesses a fluid, continuous zoom slider for micro-camera tuning before taking screenshots.
+* **Total Distance**: Displays the cumulative distance of all trails combined (with automatic scaling between meters and kilometers).
 
-- **Universal Export & Safety 🛡️**
-  - **Multi-Format Export**: Choose between **JSON** for a full state backup (preserving all editable anchors) or **KML** to directly import your routes into the official Google Maps app or Google Earth.
-  - **Safe Clear**: Use the dedicated Clear button to reset your canvas. Includes a mandatory safety check that prompts you to export a backup before data is wiped.
-  - **Cache Automatic Saving**: Unintentionally closed the tab? Your 1,000+ kilometer hike is flawlessly preserved locally via `localStorage`.
+### 💾 Universal State & Safety
+* **Full Backup Export**: Download a full **JSON** workspace backup including all routes, metadata, and editable anchors.
+* **Auto-Saving**: Never lose progress—your routes are cached dynamically inside `localStorage`.
+* **Safe Reset**: Protects data with confirmation checks prompting you to export a backup before clearing.
+
+---
+
+## 🛠 Tech Stack
+
+* **Frontend**: React 19 (Hooks, Context, standard state isolation)
+* **Build tool**: Vite 8
+* **Map integration**: `@vis.gl/react-google-maps` (Official React wrapper for Google Maps JS SDK)
+* **Geometry Engine**: Google Maps API Geometry library
+* **Icons**: `lucide-react`
+* **Styling**: Vanilla CSS (glassmorphism overlay panels, responsive controls)
+
+---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-Make sure you have Node.js installed. You must also have a Google Cloud Console account with billing enabled to obtain a Maps SDK Key.
+Make sure you have Node.js installed. You will also need a Google Cloud Console account with billing enabled to obtain a Maps API Key.
 
 ### API Requirements
-Ensure the following Google Cloud libraries are enabled for your API key:
+Ensure the following Google Cloud API libraries are enabled for your API key:
 - **Maps JavaScript API**
 - **Directions API**
 
-### Installation
+### Installation & Run
 
-1. Clone or download the repository.
-2. Install dependencies:
+1. **Clone the repository** and navigate to the root directory.
+2. **Install dependencies**:
    ```bash
    npm install
    ```
-3. Create a `.env` file at the root of the project to store your secret key securely.
-   ```bash
-   echo "VITE_GOOGLE_MAPS_API_KEY=YOUR_API_KEY_HERE" > .env
+3. **Configure environment variables**: Create a `.env` file in the root directory:
+   ```env
+   VITE_GOOGLE_MAPS_API_KEY=YOUR_GOOGLE_MAPS_API_KEY_HERE
    ```
-4. Start the development server:
+4. **Start the development server**:
    ```bash
    npm run dev
    ```
 
-## 🛠 Tech Stack
-- Frontend Framework: **React 18**
-- Build Tool: **Vite**
-- Map Rendering: **@vis.gl/react-google-maps** 
-- Dynamic Mathematics: **google.maps.geometry / routes Library**
-- UI Iconography: **Lucide React**
+---
 
-## 📝 Usage Note on Performance limits
-HikeTracker is purely a local, static progressive web app. 
-- While Google allows near-unlimited coordinates inside polylines without lagging, you may experience drops in framerate if you keep over **1,000+ active editable anchors** visible simultaneously depending on browser Canvas limits. 
-- You can utilize **Global View Mode** to instantly purge anchor renders for a buttery-smooth pan across your entire mapping history.
-- The browser limits `localStorage` to about 5MB, which will safely hold tens of thousands of deeply precise coordinates. Remember to routinely Export JSON backups for massive global trips!
+## 📸 Adding Screenshots to the README
+
+We have prepared a `screenshots/` directory at the project root to host your image files. To place the two screenshots you provided into the README, please follow these steps:
+
+1. **Locate your screenshots** on your local machine.
+2. **Save the images** inside the `screenshots/` directory of the project:
+   * Save the **light-themed Route Details screen** as: `screenshots/route_edit_light.png`
+   * Save the **dark-themed Global Appearance screen** as: `screenshots/global_view_dark.png`
+3. **Commit the images** to your Git repository:
+   ```bash
+   git add screenshots/
+   git commit -m "docs: add screenshots to screenshots directory"
+   ```
+
+Once committed and pushed to your remote repository (e.g., GitHub), the screenshots will render side-by-side automatically in the README!
+
+---
+
+## 📝 Performance & Limits
+* HikeTracker is a local-first static progressive web app. 
+* While Google Maps renders raw polylines with high performance, having over **1,000+ interactive editable anchors** simultaneously visible on the map can impact browser frame rates. Switch to **Global View Mode** to temporarily disable anchor markers for absolute performance.
+* Local storage has a ~5MB storage limit, which safely holds dozens of long routes. Export a workspace **JSON** backup regularly for large-scale multi-route records.
